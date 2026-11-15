@@ -1,3 +1,4 @@
+import '../widgets/medical_certificate_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/leave_models.dart';
@@ -35,7 +36,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     });
   }
 
-  Future<void> _openRequest(EmployeeRecord record, LeaveApplication application) async {
+  Future<void> _openRequest(
+      EmployeeRecord record, LeaveApplication application) async {
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => AdminReviewScreen(
@@ -54,7 +56,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     if (_loading || _data == null) {
       return const Scaffold(
         backgroundColor: AppColors.ground,
-        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        body:
+            Center(child: CircularProgressIndicator(color: AppColors.primary)),
       );
     }
 
@@ -114,7 +117,8 @@ class _AdminTopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.admin_panel_settings, size: 22, color: AppColors.ground),
+          const Icon(Icons.admin_panel_settings,
+              size: 22, color: AppColors.ground),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -158,7 +162,8 @@ class _AdminTopBar extends StatelessWidget {
             icon: const Icon(Icons.logout, size: 16, color: AppColors.ground),
             label: const Text(
               'Logout',
-              style: TextStyle(color: AppColors.ground, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  color: AppColors.ground, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -194,7 +199,8 @@ class _AdminSummary extends StatelessWidget {
                   color: AppColors.accentSoft,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.pending_actions, size: 20, color: AppColors.accent),
+                child: const Icon(Icons.pending_actions,
+                    size: 20, color: AppColors.accent),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -212,7 +218,8 @@ class _AdminSummary extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       '${data.admin.designation} · ${data.companyName}',
-                      style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 13, color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -222,14 +229,20 @@ class _AdminSummary extends StatelessWidget {
           const SizedBox(height: 20),
           Row(
             children: [
-              Expanded(child: _StatPill(label: 'Total Employees', value: '$total')),
+              Expanded(
+                  child: _StatPill(label: 'Total Employees', value: '$total')),
               const SizedBox(width: 14),
-              Expanded(child: _StatPill(label: 'Pending Requests', value: '$pending', highlight: true)),
+              Expanded(
+                  child: _StatPill(
+                      label: 'Pending Requests',
+                      value: '$pending',
+                      highlight: true)),
               const SizedBox(width: 14),
               Expanded(
                 child: _StatPill(
                   label: 'Reviewed',
-                  value: '${data.employees.where((e) => e.currentPending == null).length}',
+                  value:
+                      '${data.employees.where((e) => e.currentPending == null).length}',
                 ),
               ),
             ],
@@ -244,7 +257,8 @@ class _StatPill extends StatelessWidget {
   final String label;
   final String value;
   final bool highlight;
-  const _StatPill({required this.label, required this.value, this.highlight = false});
+  const _StatPill(
+      {required this.label, required this.value, this.highlight = false});
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +267,8 @@ class _StatPill extends StatelessWidget {
       decoration: BoxDecoration(
         color: highlight ? AppColors.warningSoft : AppColors.ground,
         borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: highlight ? AppColors.warning : AppColors.border),
+        border:
+            Border.all(color: highlight ? AppColors.warning : AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +284,8 @@ class _StatPill extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             label,
-            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            style:
+                const TextStyle(fontSize: 12, color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -317,7 +333,8 @@ class _PendingSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 9, vertical: 2),
                   decoration: BoxDecoration(
                     color: AppColors.warningSoft,
                     borderRadius: BorderRadius.circular(AppRadii.pill),
@@ -412,7 +429,8 @@ class _PendingRow extends StatelessWidget {
                   ),
                   Text(
                     '${emp.designation} · ${emp.department}',
-                    style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                    style: const TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary),
                   ),
                 ],
               ),
@@ -431,7 +449,8 @@ class _PendingRow extends StatelessWidget {
           application.reason,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 12.5, color: AppColors.textSecondary),
+          style:
+              const TextStyle(fontSize: 12.5, color: AppColors.textSecondary),
         ),
       ],
     );
@@ -458,9 +477,11 @@ class _PendingRow extends StatelessWidget {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.accent,
                           side: const BorderSide(color: AppColors.accent),
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
                         ),
-                        child: const Text('Review →', style: TextStyle(fontSize: 13)),
+                        child: const Text('Review →',
+                            style: TextStyle(fontSize: 13)),
                       ),
                     ),
                   ],
@@ -476,9 +497,11 @@ class _PendingRow extends StatelessWidget {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.accent,
                         side: const BorderSide(color: AppColors.accent),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
                       ),
-                      child: const Text('Review →', style: TextStyle(fontSize: 13)),
+                      child: const Text('Review →',
+                          style: TextStyle(fontSize: 13)),
                     ),
                   ],
                 ),
@@ -583,7 +606,8 @@ class _AdminReviewScreenState extends State<AdminReviewScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 32, vertical: 14),
+          padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 16 : 32, vertical: 14),
           decoration: const BoxDecoration(
             color: AppColors.surface,
             border: Border(top: BorderSide(color: AppColors.border)),
@@ -592,7 +616,8 @@ class _AdminReviewScreenState extends State<AdminReviewScreen> {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: _submitting ? null : () => _decide(LeaveStatus.rejected),
+                  onPressed:
+                      _submitting ? null : () => _decide(LeaveStatus.rejected),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.danger,
                     side: const BorderSide(color: AppColors.danger, width: 1.5),
@@ -605,7 +630,8 @@ class _AdminReviewScreenState extends State<AdminReviewScreen> {
               const SizedBox(width: 14),
               Expanded(
                 child: ElevatedButton.icon(
-                  onPressed: _submitting ? null : () => _decide(LeaveStatus.approved),
+                  onPressed:
+                      _submitting ? null : () => _decide(LeaveStatus.approved),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.success,
                     minimumSize: const Size.fromHeight(48),
@@ -614,7 +640,8 @@ class _AdminReviewScreenState extends State<AdminReviewScreen> {
                       ? const SizedBox(
                           width: 16,
                           height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.ground),
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: AppColors.ground),
                         )
                       : const Icon(Icons.check, size: 18),
                   label: const Text('Approve'),
@@ -671,7 +698,8 @@ class _EmployeeHeader extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   '${employee.designation} · ${employee.department}',
-                  style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                  style: const TextStyle(
+                      fontSize: 13, color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 6),
                 Wrap(
@@ -679,11 +707,15 @@ class _EmployeeHeader extends StatelessWidget {
                   runSpacing: 4,
                   children: [
                     Text('ID: ${employee.id}',
-                        style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.textMuted)),
                     Text(employee.email,
-                        style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
-                    Text('General: ${employee.generalLeaveBalance}d · Sick: ${employee.sickLeaveBalance}d',
-                        style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.textMuted)),
+                    Text(
+                        'General: ${employee.generalLeaveBalance}d · Sick: ${employee.sickLeaveBalance}d',
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.textMuted)),
                   ],
                 ),
               ],
@@ -733,7 +765,10 @@ class _CurrentRequestCard extends StatelessWidget {
                 '(${application.durationInDays} days)',
           ),
           _kv('Reason', application.reason),
-          if (application.documentName != null) _kv('Document', application.documentName!),
+          if (application.type == LeaveType.medical)
+            MedicalCertificateButton(application: application),
+          if (application.documentName != null)
+            _kv('Document', application.documentName!),
         ],
       ),
     );
@@ -786,8 +821,13 @@ class _HistoryCard extends StatelessWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(a.reason,
-                                style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                            if (a.adminRemark != null && a.adminRemark!.isNotEmpty) ...[
+                                style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary)),
+                            if (a.type == LeaveType.medical)
+                              MedicalCertificateButton(application: a),
+                            if (a.adminRemark != null &&
+                                a.adminRemark!.isNotEmpty) ...[
                               const SizedBox(height: 4),
                               Text('Admin: ${a.adminRemark}',
                                   style: const TextStyle(
@@ -831,7 +871,8 @@ class _DecisionCard extends StatelessWidget {
           TextField(
             controller: submission,
             maxLines: 3,
-            decoration: const InputDecoration(hintText: 'Add a remark (optional)…'),
+            decoration:
+                const InputDecoration(hintText: 'Add a remark (optional)…'),
           ),
         ],
       ),
@@ -871,7 +912,8 @@ class _SectionCard extends StatelessWidget {
               Container(
                 width: 32,
                 height: 32,
-                decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(9)),
+                decoration: BoxDecoration(
+                    color: iconBg, borderRadius: BorderRadius.circular(9)),
                 child: Icon(icon, size: 16, color: iconColor),
               ),
               const SizedBox(width: 10),

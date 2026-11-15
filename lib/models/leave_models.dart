@@ -105,6 +105,8 @@ class LeaveApplication {
   final String reason;
   final String? documentName;
   final String? documentUrl;
+  final String? medicalCertificateName;
+  final String? medicalCertificateData;
   final LeaveStatus status;
   final String? adminRemark;
 
@@ -117,6 +119,8 @@ class LeaveApplication {
     required this.reason,
     this.documentName,
     this.documentUrl,
+    this.medicalCertificateName,
+    this.medicalCertificateData,
     required this.status,
     this.adminRemark,
   });
@@ -133,6 +137,8 @@ class LeaveApplication {
       reason: json['reason'] as String,
       documentName: json['documentName'] as String?,
       documentUrl: json['documentUrl'] as String?,
+      medicalCertificateName: json['medicalCertificateName'] as String?,
+      medicalCertificateData: json['medicalCertificateData'] as String?,
       status: leaveStatusFromString(json['status'] as String),
       adminRemark: json['adminRemark'] as String?,
     );
@@ -147,6 +153,8 @@ class LeaveApplication {
         'reason': reason,
         'documentName': documentName,
         'documentUrl': documentUrl,
+        'medicalCertificateName': medicalCertificateName,
+        'medicalCertificateData': medicalCertificateData,
         'status': leaveStatusToString(status),
         'adminRemark': adminRemark,
       };
@@ -164,6 +172,8 @@ class LeaveApplication {
       reason: reason,
       documentName: documentName,
       documentUrl: documentUrl,
+      medicalCertificateName: medicalCertificateName,
+      medicalCertificateData: medicalCertificateData,
       status: status ?? this.status,
       adminRemark: adminRemark ?? this.adminRemark,
     );

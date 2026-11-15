@@ -19,9 +19,36 @@ class LeaveDataService {
   String _companyName = '';
   bool _loaded = false;
 
+  final Map<String, String> _passwords = {};
+  String? _adminPassword;
+  bool _isAdmin = false;
+
+  Future<bool> signIn(
+      {required String id,
+      required String password,
+      required bool isAdmin}) async {
+    await _ensureLoaded();
+    signOut();
+    if (isAdmin) {
+      if (_admin!.id != id || _adminPassword != password) return false;
+      _isAdmin = true;
+    } else {
+      if (!_passwords.containsKey(id) || _passwords[id] != password) {
+        return false;
+      }
+      _currentEmployeeId = id;
+    }
+    return true;
+  }
+
+  void signOut() {
+    _currentEmployeeId = null;
+    _isAdmin = false;
+  }
+
   Future<DashboardData> fetchDashboardData() async {
     await _ensureLoaded();
-    final record = _records[_employeeIdFromConfig] ?? _records.values.first;
+    final record = _records[_employeeIdFromConfig]!;
     return DashboardData(
       companyName: _companyName,
       employee: record.employee,
@@ -31,8 +58,10 @@ class LeaveDataService {
   }
 
   String get _employeeIdFromConfig {
-    // Defaults to the first employee loaded when the config has no hint.
-    return _currentEmployeeId ?? _records.keys.first;
+    if (_currentEmployeeId == null) {
+      throw StateError('Employee login required.');
+    }
+    return _currentEmployeeId!;
   }
 
   String? _currentEmployeeId;
@@ -45,13 +74,16 @@ class LeaveDataService {
 
     _companyName = json['companyName'] as String;
     _admin = Admin.fromJson(json['admin'] as Map<String, dynamic>);
-    _currentEmployeeId = json['currentEmployeeId'] as String?;
+    _adminPassword =
+        (json['admin'] as Map<String, dynamic>)['password'] as String;
 
     final employees = json['employees'] as List<dynamic>;
     for (final entry in employees) {
       final map = entry as Map<String, dynamic>;
       final employee =
           Employee.fromJson(map['employee'] as Map<String, dynamic>);
+      _passwords[employee.id] =
+          (map['employee'] as Map<String, dynamic>)['password'] as String;
       final apps = (map['leaveApplications'] as List<dynamic>)
           .map((e) => LeaveApplication.fromJson(e as Map<String, dynamic>))
           .toList()
@@ -65,6 +97,7 @@ class LeaveDataService {
   /// Admin dashboard: the admin profile plus every employee record.
   Future<AdminDashboardData> fetchAdminDashboardData() async {
     await _ensureLoaded();
+    if (!_isAdmin) throw StateError('Admin login required.');
     return AdminDashboardData(
       companyName: _companyName,
       admin: _admin!,
@@ -83,7 +116,7 @@ class LeaveDataService {
     String? adminRemark,
   }) async {
     await _ensureLoaded();
-    await Future.delayed(const Duration(milliseconds: 400));
+    if (!_isAdmin) throw StateError('Admin login required.');
 
     final record = _records[employeeId];
     if (record == null) {
@@ -108,22 +141,45 @@ class LeaveDataService {
     required DateTime endDate,
     required String reason,
     String? documentName,
+    String? medicalCertificateName,
+    String? medicalCertificateData,
   }) async {
+    await _ensureLoaded();
+    final employeeId = _employeeIdFromConfig;
+    if (reason
+            .trim()
+            .split(RegExp(r'\s+'))
+            .where((word) => RegExp(r'[A-Za-z0-9\u0980-\u09FF]').hasMatch(word))
+            .length <
+        20) {
+      throw ArgumentError('Please provide a reason of at least 20 words.');
+    }
+    if (endDate.isBefore(startDate)) {
+      throw ArgumentError('End date must follow start date.');
+    }
+    if (type == LeaveType.medical &&
+        (medicalCertificateName == null ||
+            medicalCertificateData == null ||
+            medicalCertificateData.isEmpty)) {
+      throw ArgumentError('A medical certificate is required.');
+    }
     await Future.delayed(const Duration(milliseconds: 600));
     final app = LeaveApplication(
-      id: 'LV-${DateTime.now().millisecondsSinceEpoch % 10000}',
+      id: 'LV-${DateTime.now().microsecondsSinceEpoch}',
       appliedOn: DateTime.now(),
       type: type,
       startDate: startDate,
       endDate: endDate,
       reason: reason,
       documentName: documentName,
+      medicalCertificateName: medicalCertificateName,
+      medicalCertificateData: medicalCertificateData,
       status: LeaveStatus.pending,
     );
 
     // If loaded, attach to the current employee's record so the admin sees it.
     await _ensureLoaded();
-    final id = _employeeIdFromConfig;
+    final id = employeeId;
     if (_records.containsKey(id)) {
       final existing = _records[id]!;
       _records[id] =

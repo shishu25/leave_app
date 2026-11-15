@@ -1,90 +1,149 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../utils/leave_data_service.dart';
 import 'employee_dashboard_screen.dart';
 import 'admin_dashboard_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   static const String companyName = 'Horizon & Co.';
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _id = TextEditingController();
+  final _password = TextEditingController();
+  bool _admin = false;
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _id.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final valid = await LeaveDataService.instance.signIn(
+          id: _id.text.trim(), password: _password.text, isAdmin: _admin);
+      if (!mounted) return;
+      if (!valid) {
+        setState(() => _error = 'Invalid ID or password.');
+        return;
+      }
+      _password.clear();
+      await Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (_) => _admin
+              ? const AdminDashboardScreen()
+              : const EmployeeDashboardScreen()));
+      LeaveDataService.instance.signOut();
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Unable to sign in. Please try again.');
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final size = screenSizeOf(context);
-    final isMobile = size == ScreenSize.mobile;
-
+    final isMobile = screenSizeOf(context) == ScreenSize.mobile;
     return Scaffold(
       backgroundColor: AppColors.ground,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 20 : 48,
-            vertical: 24,
-          ),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1360),
+          child: SingleChildScrollView(
+        padding: EdgeInsets.all(isMobile ? 20 : 48),
+        child: Column(children: [
+          _TopBar(isMobile: isMobile),
+          const SizedBox(height: 48),
+          _Header(),
+          const SizedBox(height: 32),
+          Center(
+              child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _TopBar(isMobile: isMobile),
-                SizedBox(height: isMobile ? 48 : 72),
-                _Header(),
-                const SizedBox(height: 40),
-                isMobile
-                    ? Column(
-                        children: [
-                          _EmployeeLoginCard(
-                              onSignIn: () => _goToDashboard(context)),
-                          const SizedBox(height: 20),
-                          _AdminLoginCard(
-                              onSignIn: () => _goToAdminDashboard(context)),
-                        ],
-                      )
-                    : Center(
-                        child: Wrap(
-                          spacing: 28,
-                          runSpacing: 28,
-                          alignment: WrapAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SegmentedButton<bool>(
+                    segments: const [
+                      ButtonSegment(value: false, label: Text('Employee')),
+                      ButtonSegment(value: true, label: Text('Admin')),
+                    ],
+                    selected: {_admin},
+                    onSelectionChanged: _busy
+                        ? null
+                        : (value) => setState(() {
+                              _admin = value.first;
+                              _id.clear();
+                              _password.clear();
+                              _error = null;
+                              _formKey.currentState?.reset();
+                            }),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.border)),
+                    child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            SizedBox(
-                              width: 320,
-                              child: _EmployeeLoginCard(
-                                onSignIn: () => _goToDashboard(context),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 320,
-                              child: _AdminLoginCard(
-                                onSignIn: () => _goToAdminDashboard(context),
-                              ),
-                            ),
+                            Text(_admin ? 'Admin Login' : 'Employee Login',
+                                style: Theme.of(context).textTheme.titleLarge),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                                controller: _id,
+                                enabled: !_busy,
+                                decoration: InputDecoration(
+                                    labelText:
+                                        _admin ? 'Admin ID' : 'Employee ID'),
+                                validator: (v) => v == null || v.trim().isEmpty
+                                    ? 'Enter your ID.'
+                                    : null),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                                controller: _password,
+                                enabled: !_busy,
+                                obscureText: true,
+                                decoration: const InputDecoration(
+                                    labelText: 'Password'),
+                                validator: (v) => v == null || v.isEmpty
+                                    ? 'Enter your password.'
+                                    : null,
+                                onFieldSubmitted: (_) {
+                                  if (!_busy) _signIn();
+                                }),
+                            if (_error != null)
+                              Padding(
+                                  padding: const EdgeInsets.only(top: 12),
+                                  child: Text(_error!,
+                                      style:
+                                          const TextStyle(color: Colors.red))),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                                onPressed: _busy ? null : _signIn,
+                                child: Text(_busy ? 'Signing in…' : 'Sign In')),
                           ],
-                        ),
-                      ),
-                const SizedBox(height: 56),
-                Text(
-                  '© $companyName · All leave data is private and role-protected',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 12, color: AppColors.textFaint),
-                ),
-                const SizedBox(height: 24),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _goToDashboard(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const EmployeeDashboardScreen()),
-    );
-  }
-
-  void _goToAdminDashboard(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const AdminDashboardScreen()),
+                        )),
+                  ),
+                ]),
+          )),
+        ]),
+      )),
     );
   }
 }
@@ -95,9 +154,9 @@ class _TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brand = Row(
+    const brand = Row(
       mainAxisSize: MainAxisSize.min,
-      children: const [
+      children: [
         Icon(Icons.badge_outlined, size: 22, color: AppColors.primary),
         SizedBox(width: 10),
         Text(
@@ -112,26 +171,27 @@ class _TopBar extends StatelessWidget {
       ],
     );
 
-    final help = const Text.rich(
+    const help = Text.rich(
       TextSpan(
         text: 'Need help? ',
         style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
         children: [
           TextSpan(
             text: 'Contact HR',
-            style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.primary),
+            style: TextStyle(
+                fontWeight: FontWeight.w700, color: AppColors.primary),
           ),
         ],
       ),
     );
 
     if (isMobile) {
-      return Column(
+      return const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [brand, const SizedBox(height: 8), help],
+        children: [brand, SizedBox(height: 8), help],
       );
     }
-    return Row(
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [brand, help],
     );
@@ -150,7 +210,8 @@ class _Header extends StatelessWidget {
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(14),
           ),
-          child: const Icon(Icons.rotate_right, color: AppColors.ground, size: 26),
+          child:
+              const Icon(Icons.rotate_right, color: AppColors.ground, size: 26),
         ),
         const SizedBox(height: 12),
         Text(
@@ -164,122 +225,6 @@ class _Header extends StatelessWidget {
           style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
         ),
       ],
-    );
-  }
-}
-
-class _EmployeeLoginCard extends StatelessWidget {
-  final VoidCallback onSignIn;
-  const _EmployeeLoginCard({required this.onSignIn});
-
-  @override
-  Widget build(BuildContext context) {
-    return _LoginCard(
-      iconBg: AppColors.primarySoft,
-      icon: Icons.person_outline,
-      iconColor: AppColors.primary,
-      title: 'Employee Login',
-      idLabel: 'Employee ID',
-      idHint: 'e.g. EMP-0245',
-      buttonChild: ElevatedButton(
-        onPressed: onSignIn,
-        style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(44)),
-        child: const Text('Sign In'),
-      ),
-    );
-  }
-}
-
-class _AdminLoginCard extends StatelessWidget {
-  final VoidCallback onSignIn;
-  const _AdminLoginCard({required this.onSignIn});
-
-  @override
-  Widget build(BuildContext context) {
-    return _LoginCard(
-      iconBg: AppColors.accentSoft,
-      icon: Icons.admin_panel_settings_outlined,
-      iconColor: AppColors.accent,
-      title: 'Admin Login',
-      idLabel: 'Admin Email',
-      idHint: 'admin@company.com',
-      buttonChild: OutlinedButton(
-        onPressed: onSignIn,
-        style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(44)),
-        child: const Text('Sign In'),
-      ),
-    );
-  }
-}
-
-class _LoginCard extends StatelessWidget {
-  final Color iconBg;
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String idLabel;
-  final String idHint;
-  final Widget buttonChild;
-
-  const _LoginCard({
-    required this.iconBg,
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.idLabel,
-    required this.idHint,
-    required this.buttonChild,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadii.xxl),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(10)),
-                child: Icon(icon, size: 18, color: iconColor),
-              ),
-              const SizedBox(width: 10),
-              Text(title,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-            ],
-          ),
-          const SizedBox(height: 18),
-          Text(idLabel,
-              style: const TextStyle(
-                  fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
-          const SizedBox(height: 6),
-          TextField(decoration: InputDecoration(hintText: idHint)),
-          const SizedBox(height: 14),
-          const Text('Password',
-              style: TextStyle(
-                  fontSize: 12.5, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
-          const SizedBox(height: 6),
-          const TextField(obscureText: true, decoration: InputDecoration(hintText: '••••••••')),
-          const SizedBox(height: 18),
-          buttonChild,
-          const SizedBox(height: 10),
-          Center(
-            child: TextButton(
-              onPressed: () {},
-              child: const Text('Forgot password?', style: TextStyle(fontSize: 12.5)),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
