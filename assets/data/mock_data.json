@@ -1,0 +1,235 @@
+{
+  "companyName": "Horizon & Co.",
+  "admin": {
+    "id": "ADM-0001",
+    "fullName": "James Okafor",
+    "initials": "JO",
+    "designation": "HR Administrator",
+    "email": "admin@company.com"
+  },
+  "currentEmployeeId": "EMP-0245",
+  "employees": [
+    {
+      "employee": {
+        "id": "EMP-0245",
+        "fullName": "Priya Sharma",
+        "initials": "PS",
+        "designation": "Senior Marketing Associate",
+        "department": "Marketing",
+        "departmentHead": "James Okafor",
+        "phone": "+1 (555) 214-7788",
+        "email": "priya.sharma@company.com",
+        "generalLeaveBalance": 12,
+        "sickLeaveBalance": 6,
+        "totalApprovedDays": 9
+      },
+      "leaveApplications": [
+        {
+          "id": "LV-1042",
+          "appliedOn": "2026-10-02",
+          "type": "General Leave",
+          "startDate": "2026-10-14",
+          "endDate": "2026-10-16",
+          "reason": "Family event out of town",
+          "documentName": "application.docx",
+          "documentUrl": null,
+          "status": "Approved",
+          "adminRemark": "Approved. Enjoy the trip."
+        },
+        {
+          "id": "LV-1038",
+          "appliedOn": "2026-09-20",
+          "type": "Medical / Sick Leave",
+          "startDate": "2026-09-22",
+          "endDate": "2026-09-22",
+          "reason": "Doctor's appointment",
+          "documentName": "application.pdf",
+          "documentUrl": null,
+          "status": "Approved",
+          "adminRemark": null
+        },
+        {
+          "id": "LV-1051",
+          "appliedOn": "2026-11-10",
+          "type": "General Leave",
+          "startDate": "2026-11-24",
+          "endDate": "2026-11-25",
+          "reason": "Personal travel",
+          "documentName": "application.docx",
+          "documentUrl": null,
+          "status": "Pending",
+          "adminRemark": null
+        },
+        {
+          "id": "LV-0987",
+          "appliedOn": "2026-08-03",
+          "type": "Medical / Sick Leave",
+          "startDate": "2026-08-05",
+          "endDate": "2026-08-06",
+          "reason": "Flu, unwell",
+          "documentName": "application.pdf",
+          "documentUrl": null,
+          "status": "Rejected",
+          "adminRemark": "Insufficient documentation attached. Please resubmit with a medical note."
+        }
+      ]
+    },
+    {
+      "employee": {
+        "id": "EMP-0312",
+        "fullName": "Daniel Reyes",
+        "initials": "DR",
+        "designation": "Backend Engineer",
+        "department": "Engineering",
+        "departmentHead": "James Okafor",
+        "phone": "+1 (555) 883-1290",
+        "email": "daniel.reyes@company.com",
+        "generalLeaveBalance": 8,
+        "sickLeaveBalance": 10,
+        "totalApprovedDays": 14
+      },
+      "leaveApplications": [
+        {
+          "id": "LV-1060",
+          "appliedOn": "2026-11-12",
+          "type": "Medical / Sick Leave",
+          "startDate": "2026-11-18",
+          "endDate": "2026-11-20",
+          "reason": "Recovering from a minor surgery",
+          "documentName": "medical_note.pdf",
+          "documentUrl": null,
+          "status": "Pending",
+          "adminRemark": null
+        },
+        {
+          "id": "LV-1015",
+          "appliedOn": "2026-09-01",
+          "type": "General Leave",
+          "startDate": "2026-09-10",
+          "endDate": "2026-09-14",
+          "reason": "Annual family vacation",
+          "documentName": "application.docx",
+          "documentUrl": null,
+          "status": "Approved",
+          "adminRemark": "Approved. Safe travels."
+        },
+        {
+          "id": "LV-0990",
+          "appliedOn": "2026-07-15",
+          "type": "General Leave",
+          "startDate": "2026-07-20",
+          "endDate": "2026-07-20",
+          "reason": "Personal errand",
+          "documentName": null,
+          "documentUrl": null,
+          "status": "Rejected",
+          "adminRemark": "Rejected — short notice during release week. Please reschedule."
+        }
+      ]
+    },
+    {
+      "employee": {
+        "id": "EMP-0188",
+        "fullName": "Aisha Khan",
+        "initials": "AK",
+        "designation": "UX Designer",
+        "department": "Product Design",
+        "departmentHead": "James Okafor",
+        "phone": "+1 (555) 402-6611",
+        "email": "aisha.khan@company.com",
+        "generalLeaveBalance": 5,
+        "sickLeaveBalance": 4,
+        "totalApprovedDays": 11
+      },
+      "leaveApplications": [
+        {
+          "id": "LV-1058",
+          "appliedOn": "2026-11-11",
+          "type": "General Leave",
+          "startDate": "2026-11-26",
+          "endDate": "2026-11-28",
+          "reason": "Attending a design conference",
+          "documentName": "application.docx",
+          "documentUrl": null,
+          "status": "Pending",
+          "adminRemark": null
+        },
+        {
+          "id": "LV-1030",
+          "appliedOn": "2026-09-12",
+          "type": "Medical / Sick Leave",
+          "startDate": "2026-09-15",
+          "endDate": "2026-09-15",
+          "reason": "Migraine",
+          "documentName": null,
+          "documentUrl": null,
+          "status": "Approved",
+          "adminRemark": null
+        }
+      ]
+    }
+  ],
+  "employee": {
+    "id": "EMP-0245",
+    "fullName": "Priya Sharma",
+    "initials": "PS",
+    "designation": "Senior Marketing Associate",
+    "department": "Marketing",
+    "departmentHead": "James Okafor",
+    "phone": "+1 (555) 214-7788",
+    "email": "priya.sharma@company.com",
+    "generalLeaveBalance": 12,
+    "sickLeaveBalance": 6,
+    "totalApprovedDays": 9
+  },
+  "leaveApplications": [
+    {
+      "id": "LV-1042",
+      "appliedOn": "2026-10-02",
+      "type": "General Leave",
+      "startDate": "2026-10-14",
+      "endDate": "2026-10-16",
+      "reason": "Family event out of town",
+      "documentName": "application.docx",
+      "documentUrl": null,
+      "status": "Approved",
+      "adminRemark": "Approved. Enjoy the trip."
+    },
+    {
+      "id": "LV-1038",
+      "appliedOn": "2026-09-20",
+      "type": "Medical / Sick Leave",
+      "startDate": "2026-09-22",
+      "endDate": "2026-09-22",
+      "reason": "Doctor's appointment",
+      "documentName": "application.pdf",
+      "documentUrl": null,
+      "status": "Approved",
+      "adminRemark": null
+    },
+    {
+      "id": "LV-1051",
+      "appliedOn": "2026-11-10",
+      "type": "General Leave",
+      "startDate": "2026-11-24",
+      "endDate": "2026-11-25",
+      "reason": "Personal travel",
+      "documentName": "application.docx",
+      "documentUrl": null,
+      "status": "Pending",
+      "adminRemark": null
+    },
+    {
+      "id": "LV-0987",
+      "appliedOn": "2026-08-03",
+      "type": "Medical / Sick Leave",
+      "startDate": "2026-08-05",
+      "endDate": "2026-08-06",
+      "reason": "Flu, unwell",
+      "documentName": "application.pdf",
+      "documentUrl": null,
+      "status": "Rejected",
+      "adminRemark": "Insufficient documentation attached. Please resubmit with a medical note."
+    }
+  ]
+}
