@@ -11,9 +11,21 @@ class StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (bg, fg, label) = switch (status) {
-      LeaveStatus.approved => (AppColors.successSoft, AppColors.success, 'Approved'),
-      LeaveStatus.rejected => (AppColors.dangerSoft, AppColors.danger, 'Rejected'),
-      LeaveStatus.pending => (AppColors.warningSoft, AppColors.warning, 'Pending'),
+      LeaveStatus.approved => (
+          AppColors.successSoft,
+          AppColors.success,
+          'Approved'
+        ),
+      LeaveStatus.rejected => (
+          AppColors.dangerSoft,
+          AppColors.danger,
+          'Rejected'
+        ),
+      LeaveStatus.pending => (
+          AppColors.warningSoft,
+          AppColors.warning,
+          'Pending'
+        ),
     };
 
     return Container(

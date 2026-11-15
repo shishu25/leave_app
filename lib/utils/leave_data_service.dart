@@ -146,13 +146,8 @@ class LeaveDataService {
   }) async {
     await _ensureLoaded();
     final employeeId = _employeeIdFromConfig;
-    if (reason
-            .trim()
-            .split(RegExp(r'\s+'))
-            .where((word) => RegExp(r'[A-Za-z0-9\u0980-\u09FF]').hasMatch(word))
-            .length <
-        20) {
-      throw ArgumentError('Please provide a reason of at least 20 words.');
+    if (reason.trim().runes.length < 20) {
+      throw ArgumentError('Please provide a reason of at least 20 characters.');
     }
     if (endDate.isBefore(startDate)) {
       throw ArgumentError('End date must follow start date.');

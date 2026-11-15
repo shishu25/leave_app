@@ -1,41 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Central design tokens — colors, type, radii, spacing.
-/// Mirrors the Home / Dashboard / Request-Leave mockups:
-/// warm neutral ground, deep teal primary, clay/orange accent.
+/// Shared Zenov BPO brand palette.
 class AppColors {
   AppColors._();
-
-  static const Color ground = Color(0xFFFAF8F4); // page background
-  static const Color surface = Color(0xFFFFFFFF); // cards
-  static const Color surfaceAlt = Color(0xFFFCFBF8); // inputs
-  static const Color modalGround = Color(0xFFEFEAE0);
-
-  static const Color border = Color(0xFFE7E2D8);
-  static const Color borderInput = Color(0xFFDCD6C8);
-  static const Color borderDashed = Color(0xFFCFC7B4);
-  static const Color divider = Color(0xFFF0ECE2);
-
-  static const Color textPrimary = Color(0xFF15332D);
-  static const Color textSecondary = Color(0xFF6B6456);
-  static const Color textMuted = Color(0xFF9A9384);
-  static const Color textFaint = Color(0xFFA49C8C);
-
-  static const Color primary = Color(0xFF1F4D45); // deep teal
-  static const Color primaryDark = Color(0xFF15332D);
-  static const Color primarySoft = Color(0xFFEEF3F1);
-
-  static const Color accent = Color(0xFFB5563C); // clay / admin + CTA
-  static const Color accentDark = Color(0xFFA14B3A);
-  static const Color accentSoft = Color(0xFFFBEFE8);
-
-  static const Color success = Color(0xFF2F6B45);
-  static const Color successSoft = Color(0xFFE8F1EA);
-  static const Color warning = Color(0xFF9A7B1F);
-  static const Color warningSoft = Color(0xFFFCF3DC);
-  static const Color danger = Color(0xFFA14B3A);
-  static const Color dangerSoft = Color(0xFFFBE7E4);
+  static const Color primary = Color(0xFF0856D9);
+  static const Color primaryDark = Color(0xFF071F50);
+  static const Color primarySoft = Color(0xFFE8F0FD);
+  static const Color ground = Color(0xFFF4F7FE);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceAlt = Color(0xFFF4F7FE);
+  static const Color modalGround = Color(0xFFE8F0FD);
+  static const Color border = Color(0xFFD1E1FB);
+  static const Color borderInput = Color(0xFF8CB4F5);
+  static const Color borderDashed = borderInput;
+  static const Color divider = border;
+  static const Color textPrimary = Color(0xFF071F50);
+  static const Color textSecondary = Color(0xFF263456);
+  static const Color textMuted = textSecondary;
+  static const Color textFaint = textSecondary;
+  static const Color accent = primary;
+  static const Color accentDark = primaryDark;
+  static const Color accentSoft = primarySoft;
+  static const Color success = primary;
+  static const Color successSoft = primarySoft;
+  static const Color warning = textSecondary;
+  static const Color warningSoft = Color(0xFFE8F0FD);
+  static const Color danger = primaryDark;
+  static const Color dangerSoft = Color(0xFFD1E1FB);
 }
 
 class AppRadii {
@@ -78,6 +70,10 @@ class AppTheme {
         primary: AppColors.primary,
         secondary: AppColors.accent,
         surface: AppColors.surface,
+        onSurface: AppColors.textPrimary,
+        onPrimary: AppColors.surface,
+        error: AppColors.danger,
+        onError: AppColors.surface,
       ),
       fontFamily: GoogleFonts.inter().fontFamily,
       textTheme: GoogleFonts.interTextTheme(),

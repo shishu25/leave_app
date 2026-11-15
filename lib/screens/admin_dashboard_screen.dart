@@ -1,3 +1,4 @@
+import '../widgets/brand_logo.dart';
 import '../widgets/medical_certificate_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -20,6 +21,7 @@ class AdminDashboardScreen extends StatefulWidget {
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   AdminDashboardData? _data;
   bool _loading = true;
+  String _search = '';
 
   @override
   void initState() {
@@ -84,6 +86,53 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     children: [
                       _AdminSummary(data: data),
                       const SizedBox(height: 28),
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Search employees',
+                          hintText: 'Enter a name or employee ID',
+                          prefixIcon: Icon(Icons.search),
+                        ),
+                        onChanged: (value) => setState(
+                            () => _search = value.trim().toLowerCase()),
+                      ),
+                      const SizedBox(height: 16),
+                      if (_search.isNotEmpty) ...[
+                        if (!data.employees.any((record) =>
+                            record.employee.fullName
+                                .toLowerCase()
+                                .contains(_search) ||
+                            record.employee.id.toLowerCase().contains(_search)))
+                          const Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Text('No employees found.')),
+                        ...data.employees
+                            .where((record) =>
+                                record.employee.fullName
+                                    .toLowerCase()
+                                    .contains(_search) ||
+                                record.employee.id
+                                    .toLowerCase()
+                                    .contains(_search))
+                            .map((record) => Card(
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                        child: Text(record.employee.initials)),
+                                    title: Text(record.employee.fullName),
+                                    subtitle: Text(
+                                        '${record.employee.id} · ${record.applications.length} leave requests'),
+                                    trailing: const Icon(Icons.chevron_right),
+                                    onTap: () async {
+                                      await Navigator.of(context).push<void>(
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  _EmployeeRequestsScreen(
+                                                      record: record)));
+                                      if (mounted) await _load();
+                                    },
+                                  ),
+                                )),
+                        const SizedBox(height: 24),
+                      ],
                       _PendingSection(
                         employees: pending,
                         isMobile: isMobile,
@@ -117,14 +166,13 @@ class _AdminTopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.admin_panel_settings,
-              size: 22, color: AppColors.ground),
+          const BrandLogo(width: 48),
           const SizedBox(width: 10),
-          Expanded(
+          const Expanded(
             child: Text(
-              '$companyName · Admin Panel',
+              'Admin Panel',
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: AppColors.ground,
@@ -961,4 +1009,58 @@ Widget _kv(String label, String value) {
       ],
     ),
   );
+}
+
+class _EmployeeRequestsScreen extends StatefulWidget {
+  final EmployeeRecord record;
+  const _EmployeeRequestsScreen({required this.record});
+  @override
+  State<_EmployeeRequestsScreen> createState() =>
+      _EmployeeRequestsScreenState();
+}
+
+class _EmployeeRequestsScreenState extends State<_EmployeeRequestsScreen> {
+  late EmployeeRecord _record = widget.record;
+  Future<void> _review(LeaveApplication application) async {
+    await Navigator.of(context).push<bool>(MaterialPageRoute(
+        builder: (_) =>
+            AdminReviewScreen(record: _record, application: application)));
+    final data = await LeaveDataService.instance.fetchAdminDashboardData();
+    if (mounted)
+      setState(() => _record = data.employees
+          .singleWhere((r) => r.employee.id == _record.employee.id));
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+            title:
+                Text('${_record.employee.fullName} · ${_record.employee.id}')),
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(_record.employee.department,
+                    style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 20),
+                ..._record.applications
+                    .where((a) => a.status == LeaveStatus.pending)
+                    .map((a) => Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _CurrentRequestCard(application: a),
+                                Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextButton(
+                                        onPressed: () => _review(a),
+                                        child: const Text('Review request →'))),
+                              ]),
+                        )),
+                _HistoryCard(history: _record.history),
+              ],
+            )),
+      );
 }

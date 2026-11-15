@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/brand_logo.dart';
 import '../utils/leave_data_service.dart';
 import 'employee_dashboard_screen.dart';
 import 'admin_dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  static const String companyName = 'Horizon & Co.';
+  static const String companyName = 'Zenov BPO';
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -91,54 +92,71 @@ class _HomeScreenState extends State<HomeScreen> {
                             }),
                   ),
                   const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.border)),
-                    child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(_admin ? 'Admin Login' : 'Employee Login',
-                                style: Theme.of(context).textTheme.titleLarge),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                                controller: _id,
-                                enabled: !_busy,
-                                decoration: InputDecoration(
-                                    labelText:
-                                        _admin ? 'Admin ID' : 'Employee ID'),
-                                validator: (v) => v == null || v.trim().isEmpty
-                                    ? 'Enter your ID.'
-                                    : null),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                                controller: _password,
-                                enabled: !_busy,
-                                obscureText: true,
-                                decoration: const InputDecoration(
-                                    labelText: 'Password'),
-                                validator: (v) => v == null || v.isEmpty
-                                    ? 'Enter your password.'
-                                    : null,
-                                onFieldSubmitted: (_) {
-                                  if (!_busy) _signIn();
-                                }),
-                            if (_error != null)
-                              Padding(
-                                  padding: const EdgeInsets.only(top: 12),
-                                  child: Text(_error!,
-                                      style:
-                                          const TextStyle(color: Colors.red))),
-                            const SizedBox(height: 20),
-                            ElevatedButton(
-                                onPressed: _busy ? null : _signIn,
-                                child: Text(_busy ? 'Signing in…' : 'Sign In')),
-                          ],
-                        )),
+                  TweenAnimationBuilder<double>(
+                    key: ValueKey(_admin),
+                    tween: Tween(begin: 0, end: 1),
+                    duration: MediaQuery.of(context).disableAnimations
+                        ? Duration.zero
+                        : const Duration(milliseconds: 380),
+                    curve: Curves.easeOutCubic,
+                    builder: (context, value, child) => Opacity(
+                        opacity: value,
+                        child: Transform.translate(
+                            offset: Offset((_admin ? 1 : -1) * 20 * (1 - value),
+                                8 * (1 - value)),
+                            child: child)),
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: AppColors.border)),
+                      child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(_admin ? 'Admin Login' : 'Employee Login',
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
+                              const SizedBox(height: 20),
+                              TextFormField(
+                                  controller: _id,
+                                  enabled: !_busy,
+                                  decoration: InputDecoration(
+                                      labelText:
+                                          _admin ? 'Admin ID' : 'Employee ID'),
+                                  validator: (v) =>
+                                      v == null || v.trim().isEmpty
+                                          ? 'Enter your ID.'
+                                          : null),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                  controller: _password,
+                                  enabled: !_busy,
+                                  obscureText: true,
+                                  decoration: const InputDecoration(
+                                      labelText: 'Password'),
+                                  validator: (v) => v == null || v.isEmpty
+                                      ? 'Enter your password.'
+                                      : null,
+                                  onFieldSubmitted: (_) {
+                                    if (!_busy) _signIn();
+                                  }),
+                              if (_error != null)
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 12),
+                                    child: Text(_error!,
+                                        style: const TextStyle(
+                                            color: AppColors.danger))),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                  onPressed: _busy ? null : _signIn,
+                                  child:
+                                      Text(_busy ? 'Signing in…' : 'Sign In')),
+                            ],
+                          )),
+                    ),
                   ),
                 ]),
           )),
@@ -201,26 +219,11 @@ class _TopBar extends StatelessWidget {
 class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
-        Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child:
-              const Icon(Icons.rotate_right, color: AppColors.ground, size: 26),
-        ),
-        const SizedBox(height: 12),
+        BrandLogo(),
+        SizedBox(height: 4),
         Text(
-          HomeScreen.companyName,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.displayLarge,
-        ),
-        const SizedBox(height: 4),
-        const Text(
           'Office Leave Management',
           style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
         ),

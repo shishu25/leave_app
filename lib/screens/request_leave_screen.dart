@@ -111,16 +111,11 @@ class _RequestLeaveScreenState extends State<RequestLeaveScreen> {
   }
 
   Future<void> _generateAndSubmit() async {
-    if (_reasonController.text
-            .trim()
-            .split(RegExp(r'\s+'))
-            .where((word) => RegExp(r'[A-Za-z0-9\u0980-\u09FF]').hasMatch(word))
-            .length <
-        20) {
+    if (_reasonController.text.trim().runes.length < 20) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text(
-                'Please describe the reason for leave in at least 20 words.')),
+                'Please describe the reason for leave in at least 20 characters.')),
       );
       return;
     }
@@ -461,8 +456,9 @@ class _FormCard extends StatelessWidget {
                 controller: reasonController,
                 maxLines: 4,
                 decoration: const InputDecoration(
-                  hintText: 'Describe your situation in at least 20 words.',
-                  helperText: 'Minimum 20 words required.',
+                  hintText:
+                      'Describe your situation in at least 20 characters.',
+                  helperText: 'Minimum 20 characters required.',
                 ),
               ),
               const SizedBox(height: 26),
@@ -612,8 +608,12 @@ class _LeaveTypeOption extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: Icon(selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                    color: selected ? AppColors.primary : AppColors.textMuted),
+                  child: Icon(
+                      selected
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked,
+                      color:
+                          selected ? AppColors.primary : AppColors.textMuted),
                 ),
                 Expanded(
                   child: Text(label,

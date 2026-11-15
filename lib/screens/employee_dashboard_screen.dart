@@ -1,3 +1,4 @@
+import '../widgets/brand_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/leave_models.dart';
@@ -12,7 +13,8 @@ class EmployeeDashboardScreen extends StatefulWidget {
   const EmployeeDashboardScreen({super.key});
 
   @override
-  State<EmployeeDashboardScreen> createState() => _EmployeeDashboardScreenState();
+  State<EmployeeDashboardScreen> createState() =>
+      _EmployeeDashboardScreenState();
 }
 
 class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
@@ -53,7 +55,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Leave application submitted — status: Pending')),
+          const SnackBar(
+              content: Text('Leave application submitted — status: Pending')),
         );
       }
     }
@@ -64,7 +67,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
     if (_loading || _data == null) {
       return const Scaffold(
         backgroundColor: AppColors.ground,
-        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        body:
+            Center(child: CircularProgressIndicator(color: AppColors.primary)),
       );
     }
 
@@ -158,7 +162,8 @@ class _TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 48, vertical: 16),
+      padding:
+          EdgeInsets.symmetric(horizontal: isMobile ? 16 : 48, vertical: 16),
       decoration: const BoxDecoration(
         color: AppColors.surface,
         border: Border(bottom: BorderSide(color: AppColors.border)),
@@ -166,17 +171,17 @@ class _TopBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Flexible(
+          const Flexible(
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.badge_outlined, size: 20, color: AppColors.primary),
-                const SizedBox(width: 10),
+                BrandLogo(width: 52),
+                SizedBox(width: 10),
                 Flexible(
                   child: Text(
-                    isMobile ? 'Leave Portal' : '$companyName · Leave Portal',
+                    'Leave Portal',
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       letterSpacing: 1.0,
                       fontWeight: FontWeight.w700,
@@ -190,15 +195,23 @@ class _TopBar extends StatelessWidget {
           Row(
             children: [
               TextButton.icon(
-                onPressed: () => Navigator.of(context).popUntil((r) => r.isFirst),
-                icon: const Icon(Icons.home_outlined, size: 16, color: AppColors.primary),
-                label: const Text('Home', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600)),
+                onPressed: () =>
+                    Navigator.of(context).popUntil((r) => r.isFirst),
+                icon: const Icon(Icons.home_outlined,
+                    size: 16, color: AppColors.primary),
+                label: const Text('Home',
+                    style: TextStyle(
+                        color: AppColors.primary, fontWeight: FontWeight.w600)),
               ),
               TextButton.icon(
-                onPressed: () => Navigator.of(context).popUntil((r) => r.isFirst),
-                icon: const Icon(Icons.logout, size: 16, color: AppColors.accentDark),
+                onPressed: () =>
+                    Navigator.of(context).popUntil((r) => r.isFirst),
+                icon: const Icon(Icons.logout,
+                    size: 16, color: AppColors.accentDark),
                 label: const Text('Logout',
-                    style: TextStyle(color: AppColors.accentDark, fontWeight: FontWeight.w600)),
+                    style: TextStyle(
+                        color: AppColors.accentDark,
+                        fontWeight: FontWeight.w600)),
               ),
             ],
           ),
@@ -239,19 +252,28 @@ class _ProfileCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(employee.fullName,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary)),
               const SizedBox(height: 2),
               Text('${employee.designation} · ${employee.department}',
-                  style: const TextStyle(fontSize: 13.5, color: AppColors.textSecondary)),
+                  style: const TextStyle(
+                      fontSize: 13.5, color: AppColors.textSecondary)),
               const SizedBox(height: 4),
               Wrap(
                 spacing: 14,
                 runSpacing: 2,
                 children: [
                   Text('Dept. Head: ${employee.departmentHead}',
-                      style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
-                  Text(employee.phone, style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
-                  Text(employee.email, style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.textMuted)),
+                  Text(employee.phone,
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.textMuted)),
+                  Text(employee.email,
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.textMuted)),
                 ],
               ),
             ],
@@ -319,7 +341,10 @@ class _HistorySection extends StatelessWidget {
             ),
             child: const Text(
               'Leave Application History',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary),
             ),
           ),
           if (isMobile)
@@ -358,7 +383,8 @@ class _HistoryTable extends StatelessWidget {
         ],
         rows: applications.map((a) {
           return DataRow(cells: [
-            DataCell(Text(dateFmt.format(a.appliedOn), style: const TextStyle(color: AppColors.textPrimary))),
+            DataCell(Text(dateFmt.format(a.appliedOn),
+                style: const TextStyle(color: AppColors.textPrimary))),
             DataCell(Text(leaveTypeToString(a.type).replaceAll(' Leave', ''),
                 style: const TextStyle(color: AppColors.textPrimary))),
             DataCell(Text(
@@ -366,11 +392,16 @@ class _HistoryTable extends StatelessWidget {
                 style: const TextStyle(color: AppColors.textPrimary))),
             DataCell(SizedBox(
               width: 220,
-              child: Text(a.reason, overflow: TextOverflow.ellipsis, style: const TextStyle(color: AppColors.textSecondary)),
+              child: Text(a.reason,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: AppColors.textSecondary)),
             )),
             DataCell(a.documentName != null
-                ? Text(a.documentName!, style: const TextStyle(color: AppColors.primary, fontSize: 13))
-                : const Text('—', style: TextStyle(color: AppColors.textMuted))),
+                ? Text(a.documentName!,
+                    style:
+                        const TextStyle(color: AppColors.primary, fontSize: 13))
+                : const Text('—',
+                    style: TextStyle(color: AppColors.textMuted))),
             DataCell(StatusBadge(status: a.status)),
           ]);
         }).toList(),
@@ -387,7 +418,11 @@ class _HeaderText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text.toUpperCase(),
-      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary, letterSpacing: 0.3),
+      style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textSecondary,
+          letterSpacing: 0.3),
     );
   }
 }
@@ -411,7 +446,10 @@ class _HistoryCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(leaveTypeToString(application.type),
-                  style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.textPrimary, fontSize: 14)),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                      fontSize: 14)),
               StatusBadge(status: application.status),
             ],
           ),
@@ -421,14 +459,20 @@ class _HistoryCard extends StatelessWidget {
             style: const TextStyle(fontSize: 13, color: AppColors.textPrimary),
           ),
           const SizedBox(height: 4),
-          Text(application.reason, style: const TextStyle(fontSize: 12.5, color: AppColors.textSecondary)),
+          Text(application.reason,
+              style: const TextStyle(
+                  fontSize: 12.5, color: AppColors.textSecondary)),
           const SizedBox(height: 6),
           Text('Applied ${dateFmt.format(application.appliedOn)}',
-              style: const TextStyle(fontSize: 11.5, color: AppColors.textMuted)),
+              style:
+                  const TextStyle(fontSize: 11.5, color: AppColors.textMuted)),
           if (application.documentName != null) ...[
             const SizedBox(height: 4),
             Text(application.documentName!,
-                style: const TextStyle(fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.w600)),
+                style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600)),
           ],
         ],
       ),
